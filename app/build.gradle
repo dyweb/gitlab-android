@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "io.dongyue.gitlabandroid"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+
+ext {
+    okhttp_version = "2.5.0"
+    retrofit_version = "2.0.0-beta2"
+    picasso_version = "2.5.2"
+    gson_version = "2.4"
+    junit_version = "4.12"
+    rx_java_version = "1.0.15"
+    rx_android_version = "1.1.0"
+    okhttp_logging_version = "2.7.0"
+}
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    compile "com.squareup.okhttp:okhttp:$okhttp_version"
+
+    compile "com.squareup.retrofit:retrofit:$retrofit_version"
+    compile "com.squareup.retrofit:converter-gson:$retrofit_version"
+    compile "com.squareup.retrofit:adapter-rxjava:$retrofit_version"
+    compile "io.reactivex:rxjava:$rx_java_version"
+    compile "io.reactivex:rxandroid:$rx_android_version"
+    compile "com.squareup.picasso:picasso:$picasso_version"
+    compile "com.squareup.okhttp:logging-interceptor:$okhttp_logging_version"
+
+    compile "com.google.code.gson:gson:$gson_version"
+
+    testCompile "junit:junit:$junit_version"
+}
