@@ -29,12 +29,13 @@ public class AuthentificationInterceptor implements Interceptor {
         HttpUrl url = request.httpUrl();
         String privateToken =account.getPrivateToken();
         if(privateToken!=null) {
-            url = url.newBuilder()
+            /*url = url.newBuilder()
                     .addQueryParameter(PRIVATE_TOKEN_GET_PARAMETER, privateToken)
-                    .build();
+                    .build();*/
             request = request.newBuilder()
                     .header(PRIVATE_TOKEN_HEADER_FIELD, privateToken)
-                    .url(url).build();
+                    //.url(url)
+                    .build();
         }
         return chain.proceed(request);
     }

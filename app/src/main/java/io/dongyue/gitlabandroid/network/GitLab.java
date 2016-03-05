@@ -38,6 +38,8 @@ import rx.Observable;
  * http://doc.gitlab.com/ce/api/README.html
  */
 public interface GitLab {
+
+    String BASE_URL = "https://git.tongqu.me/";
     String API_VERSION = "api/v3";
 
     /* --- LOGIN --- */
@@ -111,7 +113,7 @@ public interface GitLab {
     /* --- PROJECTS --- */
 
     @GET(API_VERSION + "/projects?order_by=last_activity_at")
-    Call<List<Project>> getAllProjects();
+    Observable<List<Project>> getAllProjects();
 
     @GET(API_VERSION + "/projects/owned?order_by=last_activity_at")
     Call<List<Project>> getMyProjects();

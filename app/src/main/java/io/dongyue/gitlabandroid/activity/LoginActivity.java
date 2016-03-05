@@ -1,50 +1,34 @@
-package io.dongyue.gitlabandroid;
+package io.dongyue.gitlabandroid.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
+import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.model.Account;
 import io.dongyue.gitlabandroid.model.api.UserLogin;
+import io.dongyue.gitlabandroid.network.GitLab;
 import io.dongyue.gitlabandroid.network.GitlabClient;
-import io.dongyue.gitlabandroid.utils.BaseActivity;
+import io.dongyue.gitlabandroid.utils.Prefs;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -131,8 +115,13 @@ public class LoginActivity extends BaseActivity {
                         @Override
                         public void call(UserLogin userLogin) {
                             account.setPrivateToken(userLogin.getPrivateToken());
+                            account.setServerUrl(Uri.parse(GitLab.BASE_URL));
+                            Prefs.setAccount(LoginActivity.this, account);
+                            GitlabClient.setAccount(account);
                             Toast.makeText(LoginActivity.this,account.getPrivateToken(),Toast.LENGTH_SHORT).show();
                             showProgress(false);
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            finish();
                         }
                     }, new Action1<Throwable>() {
                         @Override
