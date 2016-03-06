@@ -25,4 +25,8 @@
     <string name="title_activity_project">ProjectActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_issue">IssueActivity</string>
+
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

@@ -36,11 +36,7 @@ ext {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.jakewharton:butterknife:7.0.1'
 
-    compile "org.parceler:parceler-api:1.0.3"
     apt "org.parceler:parceler:1.0.3"
 
     compile "com.squareup.okhttp:okhttp:$okhttp_version"
@@ -56,4 +52,9 @@ dependencies {
     compile "com.google.code.gson:gson:$gson_version"
 
     testCompile "junit:junit:$junit_version"
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'org.parceler:parceler-api:1.0.3'
+    compile 'com.android.support:support-v4:23.1.1'
 }

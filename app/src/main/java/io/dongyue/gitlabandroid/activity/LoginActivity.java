@@ -26,6 +26,7 @@ import io.dongyue.gitlabandroid.model.api.UserLogin;
 import io.dongyue.gitlabandroid.network.GitLab;
 import io.dongyue.gitlabandroid.network.GitlabClient;
 import io.dongyue.gitlabandroid.utils.Prefs;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -108,8 +109,10 @@ public class LoginActivity extends BaseActivity {
             // perform the user login attempt.
             showProgress(true);
 
-            addSubscription(GitlabClient.getInstance(account)
-                    .loginWithEmail(email,password).first()
+            Observable<UserLogin> observable = isEmailValid(email)?GitlabClient.getInstance(account).loginWithEmail(email,password)
+                    :GitlabClient.getInstance(account).loginWithUsername(email,password);
+
+            addSubscription(observable.first()
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<UserLogin>() {
                         @Override
@@ -136,6 +139,10 @@ public class LoginActivity extends BaseActivity {
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    private boolean isEmailValid(String email){
+        return email.contains("@");
     }
 
     /**
