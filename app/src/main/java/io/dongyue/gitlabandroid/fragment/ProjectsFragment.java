@@ -21,6 +21,7 @@ import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.adapter.ProjectsAdapter;
 import io.dongyue.gitlabandroid.model.api.Project;
 import io.dongyue.gitlabandroid.network.GitlabClient;
+import io.dongyue.gitlabandroid.utils.NavigationManager;
 import io.dongyue.gitlabandroid.utils.ToastUtils;
 import retrofit.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -64,6 +65,12 @@ public class ProjectsFragment extends BaseFragment {
         ButterKnife.bind(this, view);
 
         projectsAdapter = new ProjectsAdapter();
+        projectsAdapter.setOnItemClickListener(new ProjectsAdapter.OnProjectListener() {
+            @Override
+            public void onProjectClick(Project project) {
+                NavigationManager.toProject(getActivity(),project);
+            }
+        });
         linearLayoutManager = new LinearLayoutManager(getActivity());
         projectsListView.setLayoutManager(linearLayoutManager);
         projectsListView.setAdapter(projectsAdapter);

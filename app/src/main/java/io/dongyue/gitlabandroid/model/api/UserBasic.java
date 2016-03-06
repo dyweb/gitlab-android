@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class UserBasic extends UserSafe {
     @SerializedName("id")
     long mId;

@@ -24,6 +24,7 @@ import io.dongyue.gitlabandroid.view.CircleTransformation;
 public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<Project> projects;
+    private OnProjectListener listener;
 
     public ProjectsAdapter(){
         projects = new ArrayList<>();
@@ -39,9 +40,27 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
+    public interface OnProjectListener{
+        void onProjectClick(Project project);
+    }
+
+    private final View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int pos = (int)v.getTag(R.id.list_position);
+            if(listener!=null)listener.onProjectClick(projects.get(pos));
+        }
+    };
+
+    public void setOnItemClickListener(OnProjectListener listener){
+        this.listener = listener;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return ProjectViewHolder.inflate(parent);
+        ProjectViewHolder holder = ProjectViewHolder.inflate(parent);
+        holder.itemView.setOnClickListener(onClickListener);
+        return holder;
     }
 
     @Override
@@ -49,6 +68,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Project project = projects.get(position);
         if(holder instanceof ProjectViewHolder){
             ((ProjectViewHolder)holder).bind(project);
+            holder.itemView.setTag(R.id.list_position,position);
         }
     }
 

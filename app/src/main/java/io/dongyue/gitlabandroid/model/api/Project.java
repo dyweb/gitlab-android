@@ -5,10 +5,14 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Project {
+@Parcel
+public class Project{
     @SerializedName("id")
     long mId;
     @SerializedName("description")

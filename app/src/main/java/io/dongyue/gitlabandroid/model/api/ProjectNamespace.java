@@ -5,8 +5,11 @@ import android.net.Uri;
 import com.google.gson.annotations.SerializedName;
 
 
+import org.parceler.Parcel;
+
 import java.util.Date;
 
+@Parcel
 public class ProjectNamespace {
     @SerializedName("id")
     long mId;
@@ -80,6 +83,7 @@ public class ProjectNamespace {
         return (int) (mId ^ (mId >>> 32));
     }
 
+    @Parcel
     public static class Avatar {
         @SerializedName("url")
         Uri mUrl;

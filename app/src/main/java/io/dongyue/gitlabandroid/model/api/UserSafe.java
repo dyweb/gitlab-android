@@ -2,6 +2,9 @@ package io.dongyue.gitlabandroid.model.api;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class UserSafe {
     @SerializedName("name")
     String mName;
