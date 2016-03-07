@@ -24,6 +24,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.fragment.ActivitiesFragment;
 import io.dongyue.gitlabandroid.fragment.ProjectsFragment;
 import io.dongyue.gitlabandroid.view.NoScrollViewPager;
 
@@ -94,7 +95,7 @@ public class HomeActivity extends AppCompatActivity{
      */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
-        final int COUNT = 4;
+        final int COUNT = 3;
         Fragment[] fragments;
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -111,14 +112,11 @@ public class HomeActivity extends AppCompatActivity{
                     fragments[0]= ProjectsFragment.newInstance();
                     return fragments[0];
                 case 1:
-                    fragments[1]= ProjectsFragment.newInstance();
+                    fragments[1]= ActivitiesFragment.newInstance(null,null);
                     return fragments[1];
                 case 2:
                     fragments[2]= ProjectsFragment.newInstance();
                     return fragments[2];
-                case 3:
-                    fragments[3] = ProjectsFragment.newInstance();
-                    return fragments[3];
                 default:
                     fragments[position]=ProjectsFragment.newInstance();
                     return fragments[position];
@@ -140,13 +138,11 @@ public class HomeActivity extends AppCompatActivity{
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Project";
                 case 1:
-                    return "SECTION 2";
+                    return "Activity";
                 case 2:
                     return "SECTION 3";
-                case 3:
-                    return "SECTION 4";
             }
             return null;
         }

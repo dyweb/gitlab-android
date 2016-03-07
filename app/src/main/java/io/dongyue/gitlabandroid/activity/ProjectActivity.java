@@ -68,6 +68,7 @@ public class ProjectActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Project project = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_PROJECT));
         ToastUtils.showShort(project.getNameWithNamespace());
@@ -91,6 +92,13 @@ public class ProjectActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == android.R.id.home) {
+            if (!super.onOptionsItemSelected(item)) {
+                //NavUtils.navigateUpFromSameTask(this);
+                finish();
+            }
             return true;
         }
 
@@ -117,19 +125,24 @@ public class ProjectActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            return 6;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "OVERVIEW";
                 case 1:
-                    return "SECTION 2";
+                    return "ACTIVITY";
                 case 2:
-                    return "SECTION 3";
+                    return "FILES";
+                case 3:
+                    return "COMMIT";
+                case 4:
+                    return "ISSUE";
+                case 5:
+                    return "MEMBERS";
             }
             return null;
         }

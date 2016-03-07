@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_project" android:icon="@android:drawable/ic_menu_edit"
-            android:title="Project" android:checked="true"/>
-        <item android:id="@+id/nav_issue" android:icon="@android:drawable/ic_menu_agenda"
-            android:title="Issue" />
+    <group>
         <item android:id="@+id/nav_activity" android:icon="@android:drawable/ic_menu_recent_history"
-            android:title="Activity" />
+            android:title="My Activities" />
+        <item android:id="@+id/nav_issue" android:icon="@android:drawable/ic_menu_agenda"
+            android:title="My Issues" />
         <item android:id="@+id/nav_group"
             android:title="Group" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Application">
         <menu>
             <item android:id="@+id/nav_settings" android:icon="@android:drawable/ic_menu_manage"
                 android:title="Settings" />
             <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_info_details"
                 android:title="About" />
             <item android:id="@+id/nav_quit" android:icon="@android:drawable/ic_menu_close_clear_cancel"
-            android:title="Quit" />
+                android:title="Quit" />
         </menu>
     </item>
 

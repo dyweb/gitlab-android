@@ -36,38 +36,30 @@ public class GitlabNavigationView extends NavigationView {
     public void init(){
         inflateMenu(R.menu.activity_home_drawer);
         View header = inflateHeaderView(R.layout.nav_header_home);
-        ButterKnife.bind(this,header);
+        ButterKnife.bind(this, header);
+        header.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigationManager.toUserInfo(getContext());
+            }
+        });
 
         setNavigationItemSelectedListener(onNavigationItemSelectedListener);
-        setSelectedItem();
-    }
-
-    private void setSelectedItem(){
-        if(getContext() instanceof HomeActivity)
-            getMenu().findItem(R.id.nav_project).setChecked(true);
-        else if(getContext() instanceof IssueActivity)
-            getMenu().findItem(R.id.nav_issue).setChecked(true);
+        //setSelectedItem();
     }
 
     private OnNavigationItemSelectedListener onNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()){
-                case R.id.nav_project:
-                    if(getContext() instanceof HomeActivity){
-
-                    }else{
-                        NavigationManager.toProjectList(getContext());
-                        ((Activity)getContext()).finish();
-                    }
+                case R.id.nav_activity:
                     break;
                 case R.id.nav_issue:
-                    if(getContext() instanceof IssueActivity){
-
-                    }else{
-                        NavigationManager.toIssueList(getContext());
-                        ((Activity)getContext()).finish();
-                    }
+                    NavigationManager.toIssueList(getContext());break;
+                case R.id.nav_settings:
+                    NavigationManager.toSettings(getContext());break;
+                case R.id.nav_quit:
+                    ((Activity)getContext()).finish();break;
                 default:break;
             }
             return true;

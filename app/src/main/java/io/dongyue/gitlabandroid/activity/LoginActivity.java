@@ -21,6 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.activity.base.BaseActivity;
 import io.dongyue.gitlabandroid.model.Account;
 import io.dongyue.gitlabandroid.model.api.UserLogin;
 import io.dongyue.gitlabandroid.network.GitLab;

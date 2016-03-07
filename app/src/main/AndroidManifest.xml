@@ -29,11 +29,18 @@
             android:name=".activity.ProjectActivity"
             android:label="@string/title_activity_project"
             android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.dongyue.gitlabandroid.activity.HomeActivity" />
         </activity>
         <activity
             android:name=".activity.IssueActivity"
             android:label="@string/title_activity_issue"
+            android:parentActivityName=".activity.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.dongyue.gitlabandroid.activity.HomeActivity" />
         </activity>
         <activity
             android:name=".activity.WelcomeActivity"
@@ -45,6 +52,23 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activity.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.dongyue.gitlabandroid.activity.HomeActivity" />
+        </activity>
+        <activity
+            android:name=".activity.UserInfoActivity"
+            android:label="@string/title_activity_user_info"
+            android:parentActivityName=".activity.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.dongyue.gitlabandroid.activity.HomeActivity" />
         </activity>
     </application>
 

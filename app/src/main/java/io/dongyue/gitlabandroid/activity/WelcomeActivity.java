@@ -2,22 +2,27 @@ package io.dongyue.gitlabandroid.activity;
 
 import android.annotation.SuppressLint;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+
+import java.util.concurrent.TimeUnit;
+
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.activity.base.BaseActivity;
 import io.dongyue.gitlabandroid.model.Account;
 import io.dongyue.gitlabandroid.utils.NavigationManager;
 import io.dongyue.gitlabandroid.utils.Prefs;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends BaseActivity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -75,7 +80,12 @@ public class WelcomeActivity extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
-        checkTokenExist();
+        addSubscription(Observable.timer(1, TimeUnit.SECONDS).subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                checkTokenExist();
+            }
+        }));
     }
 
     @Override
