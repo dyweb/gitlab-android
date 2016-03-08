@@ -3,6 +3,7 @@ package io.dongyue.gitlabandroid;
 import android.app.Application;
 import android.content.Context;
 
+import io.dongyue.gitlabandroid.network.GitlabClient;
 import io.dongyue.gitlabandroid.utils.ToastUtils;
 
 /**
@@ -16,6 +17,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         context = this;
+        GitlabClient.init(this);
         ToastUtils.register(this);
     }
 

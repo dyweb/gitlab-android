@@ -26,12 +26,9 @@ public class AuthentificationInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        HttpUrl url = request.httpUrl();
+//        HttpUrl url = request.httpUrl();
         String privateToken =account.getPrivateToken();
         if(privateToken!=null) {
-            /*url = url.newBuilder()
-                    .addQueryParameter(PRIVATE_TOKEN_GET_PARAMETER, privateToken)
-                    .build();*/
             request = request.newBuilder()
                     .header(PRIVATE_TOKEN_HEADER_FIELD, privateToken)
                     //.url(url)

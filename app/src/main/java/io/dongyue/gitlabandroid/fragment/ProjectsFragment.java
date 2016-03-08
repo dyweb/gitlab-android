@@ -85,21 +85,7 @@ public class ProjectsFragment extends BaseFragment {
                 .subscribe(new Action1<List<Project>>() {
                     @Override
                     public void call(List<Project> list) {
-                        Log.i("yj", "data get "+list.size());
                         projectsAdapter.set(list);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable e) {
-                        if (e instanceof HttpException) {
-                            ToastUtils.showShort("error code " + ((HttpException) e).code());
-                        }else{
-                            if(TextUtils.isEmpty(e.getMessage()))
-                                ToastUtils.showShort("not connected");
-                            else
-                                ToastUtils.showShort(e.getMessage());
-                        }
-                        e.printStackTrace();
                     }
                 }));
     }
