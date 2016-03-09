@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="error_not_connected">network not connected</string>
+    <string name="error_not_connected">网络没有连接</string>
+    <string name="error_unknown_host">无法连接到服务器</string>
 
 </resources>

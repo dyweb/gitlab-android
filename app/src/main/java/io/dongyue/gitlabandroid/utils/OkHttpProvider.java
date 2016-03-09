@@ -13,24 +13,24 @@ import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import io.dongyue.gitlabandroid.App;
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.model.Account;
 import io.dongyue.gitlabandroid.model.api.APIError;
 import io.dongyue.gitlabandroid.network.AuthentificationInterceptor;
 import io.dongyue.gitlabandroid.network.ConnectivityHelper;
-import retrofit.HttpException;
+import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
+import io.dongyue.gitlabandroid.utils.eventbus.events.APIErrorEvent;
+import io.dongyue.gitlabandroid.utils.eventbus.events.NoNetworkEvent;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 
 /**
  * Created by Brotherjing on 2016/3/5.
  */
 public class OkHttpProvider {
 
-    private static Context mContext;
     private static OkHttpClient client;
-
-    public static void init(Context context){
-        mContext = context;
-    }
 
     public static OkHttpClient getInstance(Account account){
         if(client==null){
@@ -49,15 +49,17 @@ public class OkHttpProvider {
         public Response intercept(Chain chain) throws IOException {
 
             Request request = chain.request();
-            if(!ConnectivityHelper.isConnected(mContext)){
-                Log.i("yj",mContext.getResources().getString(R.string.error_not_connected));
-                return chain.proceed(request);
+            if(!ConnectivityHelper.isConnected(App.getInstance())){
+                RxBus.getBus().post(new NoNetworkEvent());
+                //Log.i("yj",mContext.getResources().getString(R.string.error_not_connected));
+                return null;
             }
             Response response = chain.proceed(request);
             if(!response.isSuccessful()){
-                String msg = response.message();
+                //String msg = response.message();
                 APIError error = GsonProvider.getInstance().fromJson(response.body().string(),APIError.class);
-                Log.i("yj","msg: "+msg+" error: "+error.getMessage());
+                RxBus.getBus().post(new APIErrorEvent(response.code(),error));
+                return null;
             }
             return response;
         }

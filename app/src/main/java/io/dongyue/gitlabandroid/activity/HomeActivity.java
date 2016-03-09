@@ -24,11 +24,19 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.activity.base.BaseActivity;
 import io.dongyue.gitlabandroid.fragment.ActivitiesFragment;
 import io.dongyue.gitlabandroid.fragment.ProjectsFragment;
+import io.dongyue.gitlabandroid.utils.NavigationManager;
+import io.dongyue.gitlabandroid.utils.ToastUtils;
+import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
+import io.dongyue.gitlabandroid.utils.eventbus.events.APIErrorEvent;
+import io.dongyue.gitlabandroid.utils.eventbus.events.CloseDrawerEvent;
 import io.dongyue.gitlabandroid.view.NoScrollViewPager;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends BaseActivity{
 
     @Bind(R.id.container) NoScrollViewPager mViewPager;
     @Bind(R.id.tabs) TabLayout tabLayout;
@@ -55,6 +63,29 @@ public class HomeActivity extends AppCompatActivity{
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(0);
         tabLayout.setupWithViewPager(mViewPager);
+
+        addSubscription(RxBus.getBus().observeEvents(CloseDrawerEvent.class)
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<CloseDrawerEvent>() {
+                    @Override
+                    public void call(CloseDrawerEvent closeDrawerEvent) {
+                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        }
+                    }
+                }));
+
+        addSubscription(RxBus.getBus().observeEvents(APIErrorEvent.class)
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<APIErrorEvent>() {
+                    @Override
+                    public void call(APIErrorEvent apiErrorEvent) {
+                        if(apiErrorEvent.getCode()==401) {
+                            NavigationManager.toLogin(HomeActivity.this);
+                            finish();
+                        }
+                        //other cases
+                    }
+                }));
     }
 
     @Override

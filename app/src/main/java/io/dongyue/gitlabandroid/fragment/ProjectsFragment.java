@@ -1,14 +1,9 @@
 package io.dongyue.gitlabandroid.fragment;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +16,11 @@ import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.adapter.ProjectsAdapter;
 import io.dongyue.gitlabandroid.model.api.Project;
 import io.dongyue.gitlabandroid.network.GitlabClient;
+import io.dongyue.gitlabandroid.network.GitlabSubscriber;
 import io.dongyue.gitlabandroid.utils.NavigationManager;
-import io.dongyue.gitlabandroid.utils.ToastUtils;
-import retrofit.HttpException;
+import io.dongyue.gitlabandroid.utils.eventbus.events.CloseDrawerEvent;
+import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class ProjectsFragment extends BaseFragment {
@@ -45,11 +40,6 @@ public class ProjectsFragment extends BaseFragment {
 
     public ProjectsFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -76,15 +66,16 @@ public class ProjectsFragment extends BaseFragment {
         projectsListView.setAdapter(projectsAdapter);
 
         loadData();
+
     }
 
     private void loadData(){
         addSubscription(GitlabClient.getInstance().getAllProjects()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Project>>() {
+                .subscribe(new GitlabSubscriber<List<Project>>() {
                     @Override
-                    public void call(List<Project> list) {
+                    public void onNext(List<Project> list) {
                         projectsAdapter.set(list);
                     }
                 }));

@@ -23,6 +23,7 @@
         <activity
             android:name=".activity.HomeActivity"
             android:label="@string/title_activity_home"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity

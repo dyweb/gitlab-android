@@ -25,10 +25,16 @@ import android.widget.TextView;
 import org.parceler.Parcels;
 
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.activity.base.BaseActivity;
 import io.dongyue.gitlabandroid.model.api.Project;
+import io.dongyue.gitlabandroid.utils.NavigationManager;
 import io.dongyue.gitlabandroid.utils.ToastUtils;
+import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
+import io.dongyue.gitlabandroid.utils.eventbus.events.APIErrorEvent;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
-public class ProjectActivity extends AppCompatActivity {
+public class ProjectActivity extends BaseActivity {
 
     private static final String EXTRA_PROJECT = "project";
 
@@ -73,6 +79,17 @@ public class ProjectActivity extends AppCompatActivity {
         Project project = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_PROJECT));
         ToastUtils.showShort(project.getNameWithNamespace());
 
+        addSubscription(RxBus.getBus().observeEvents(APIErrorEvent.class)
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<APIErrorEvent>() {
+                    @Override
+                    public void call(APIErrorEvent apiErrorEvent) {
+                        if(apiErrorEvent.getCode()==401) {
+                            NavigationManager.toLogin(ProjectActivity.this);
+                            finish();
+                        }
+                        //other cases
+                    }
+                }));
     }
 
 

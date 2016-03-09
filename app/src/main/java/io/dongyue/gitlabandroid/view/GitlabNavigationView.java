@@ -13,6 +13,8 @@ import io.dongyue.gitlabandroid.activity.HomeActivity;
 import io.dongyue.gitlabandroid.activity.IssueActivity;
 import io.dongyue.gitlabandroid.model.api.Issue;
 import io.dongyue.gitlabandroid.utils.NavigationManager;
+import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
+import io.dongyue.gitlabandroid.utils.eventbus.events.CloseDrawerEvent;
 
 /**
  * Created by Brotherjing on 2016/3/6.
@@ -62,6 +64,7 @@ public class GitlabNavigationView extends NavigationView {
                     ((Activity)getContext()).finish();break;
                 default:break;
             }
+            RxBus.getBus().post(new CloseDrawerEvent());
             return true;
         }
     };

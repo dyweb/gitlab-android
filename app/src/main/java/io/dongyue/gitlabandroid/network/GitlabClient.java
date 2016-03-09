@@ -37,10 +37,6 @@ public class GitlabClient {
     private static GitLab gitLab;
     private static Picasso picasso;
 
-    public static void init(Context context){
-        OkHttpProvider.init(context);
-    }
-
     public static void setAccount(Account account){
         sAccount = account;
         gitLab = null;
