@@ -109,23 +109,13 @@ public class ProjectsFragment extends BaseFragment {
         ButterKnife.bind(this, view);
 
         projectsAdapter = new ProjectsAdapter();
-        projectsAdapter.setOnItemClickListener(new ProjectsAdapter.OnProjectListener() {
-            @Override
-            public void onProjectClick(Project project) {
-                NavigationManager.toProject(ProjectsFragment.this.getActivity(), project);
-            }
-        });
+        projectsAdapter.setOnItemClickListener(project -> NavigationManager.toProject(ProjectsFragment.this.getActivity(), project));
         linearLayoutManager = new LinearLayoutManager(getActivity());
         projectsListView.setLayoutManager(linearLayoutManager);
         projectsListView.setAdapter(projectsAdapter);
 
         projectsListView.addOnScrollListener(mOnScrollListener);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadData();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this::loadData);
 
         loadData();
 

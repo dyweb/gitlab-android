@@ -93,12 +93,7 @@ public class ActivitiesFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        feedAdapter = new FeedAdapter(new FeedAdapter.Listener() {
-            @Override
-            public void onFeedEntryClicked(Entry entry) {
-                ToastUtils.showShort(entry.getTitle());
-            }
-        });
+        feedAdapter = new FeedAdapter(entry -> ToastUtils.showShort(entry.getTitle()));
         activityListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         activityListView.setAdapter(feedAdapter);
 
@@ -123,12 +118,9 @@ public class ActivitiesFragment extends BaseFragment {
                     .subscribe(subscriber));
         }else if(feed_type==FEED_TYPE_USER){
             addSubscription(GitlabClient.getInstance().getThisUser()
-                .flatMap(new Func1<UserFull, Observable<Feed>>() {
-                    @Override
-                    public Observable<Feed> call(UserFull userFull) {
-                        Logger.i(userFull.getFeedUrl().toString());
-                        return GitlabClient.getRssInstance().getFeed(userFull.getFeedUrl().toString());
-                    }
+                .flatMap(userFull -> {
+                    Logger.i(userFull.getFeedUrl().toString());
+                    return GitlabClient.getRssInstance().getFeed(userFull.getFeedUrl().toString());
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
         }else if(feed_type == FEED_TYPE_ALL){
