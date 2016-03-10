@@ -17,13 +17,14 @@ import io.dongyue.gitlabandroid.adapter.ProjectsAdapter;
 import io.dongyue.gitlabandroid.model.api.Project;
 import io.dongyue.gitlabandroid.network.GitlabClient;
 import io.dongyue.gitlabandroid.network.GitlabSubscriber;
+import io.dongyue.gitlabandroid.utils.Logger;
 import io.dongyue.gitlabandroid.utils.NavigationManager;
-import io.dongyue.gitlabandroid.utils.eventbus.events.CloseDrawerEvent;
-import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class ProjectsFragment extends BaseFragment {
+
+    boolean mLoading;
 
     @Bind(R.id.swipe_layout) SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.list) RecyclerView projectsListView;
@@ -31,11 +32,64 @@ public class ProjectsFragment extends BaseFragment {
     private ProjectsAdapter projectsAdapter;
     private LinearLayoutManager linearLayoutManager;
 
+    private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = linearLayoutManager.getChildCount();
+            int totalItemCount = linearLayoutManager.getItemCount();
+            int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+            if (firstVisibleItem + visibleItemCount >= totalItemCount && !mLoading && projectsAdapter.hasMore()) {
+                loadMore();
+            }
+        }
+    };
+
+    private void loadData(){
+        swipeRefreshLayout.setRefreshing(true);
+        addSubscription(GitlabClient.getInstance().getAllProjects()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GitlabSubscriber<List<Project>>() {
+                    @Override
+                    public void onNext(List<Project> list) {
+                        projectsAdapter.set(list);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }));
+    }
+
+    private void loadMore(){
+        mLoading = true;
+        swipeRefreshLayout.setRefreshing(true);
+        addSubscription(GitlabClient.getInstance().getAllProjects(projectsAdapter.getPage()+1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GitlabSubscriber<List<Project>>() {
+                    @Override
+                    public void onNext(List<Project> list) {
+                        projectsAdapter.add(list);
+                        mLoading = false;
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mLoading = false;
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }));
+    }
+
     public static ProjectsFragment newInstance() {
-        ProjectsFragment fragment = new ProjectsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        return new ProjectsFragment();
     }
 
     public ProjectsFragment() {
@@ -58,27 +112,28 @@ public class ProjectsFragment extends BaseFragment {
         projectsAdapter.setOnItemClickListener(new ProjectsAdapter.OnProjectListener() {
             @Override
             public void onProjectClick(Project project) {
-                NavigationManager.toProject(getActivity(),project);
+                NavigationManager.toProject(ProjectsFragment.this.getActivity(), project);
             }
         });
         linearLayoutManager = new LinearLayoutManager(getActivity());
         projectsListView.setLayoutManager(linearLayoutManager);
         projectsListView.setAdapter(projectsAdapter);
 
+        projectsListView.addOnScrollListener(mOnScrollListener);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+            }
+        });
+
         loadData();
 
     }
 
-    private void loadData(){
-        addSubscription(GitlabClient.getInstance().getAllProjects()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GitlabSubscriber<List<Project>>() {
-                    @Override
-                    public void onNext(List<Project> list) {
-                        projectsAdapter.set(list);
-                    }
-                }));
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
-
 }

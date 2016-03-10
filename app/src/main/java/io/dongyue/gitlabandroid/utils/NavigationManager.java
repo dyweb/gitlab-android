@@ -6,6 +6,7 @@ import android.content.Intent;
 import io.dongyue.gitlabandroid.activity.HomeActivity;
 import io.dongyue.gitlabandroid.activity.IssueActivity;
 import io.dongyue.gitlabandroid.activity.LoginActivity;
+import io.dongyue.gitlabandroid.activity.MyActivitesActivity;
 import io.dongyue.gitlabandroid.activity.ProjectActivity;
 import io.dongyue.gitlabandroid.activity.SettingsActivity;
 import io.dongyue.gitlabandroid.activity.UserInfoActivity;
@@ -26,6 +27,10 @@ public class NavigationManager {
 
     public static void toProjectList(Context context){
         context.startActivity(new Intent(context, HomeActivity.class));
+    }
+
+    public static void toMyActivities(Context context){
+        context.startActivity(new Intent(context, MyActivitesActivity.class));
     }
 
     public static void toIssueList(Context context){

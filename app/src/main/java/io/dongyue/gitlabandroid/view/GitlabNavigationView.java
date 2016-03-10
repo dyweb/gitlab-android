@@ -55,7 +55,7 @@ public class GitlabNavigationView extends NavigationView {
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()){
                 case R.id.nav_activity:
-                    break;
+                    NavigationManager.toMyActivities(getContext());break;
                 case R.id.nav_issue:
                     NavigationManager.toIssueList(getContext());break;
                 case R.id.nav_settings:

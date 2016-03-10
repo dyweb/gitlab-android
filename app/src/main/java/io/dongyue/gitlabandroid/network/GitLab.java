@@ -112,8 +112,14 @@ public interface GitLab {
 
     /* --- PROJECTS --- */
 
-    @GET(API_VERSION + "/projects?order_by=last_activity_at")
+    @GET(API_VERSION + "/projects")
     Observable<List<Project>> getAllProjects();
+
+    @GET(API_VERSION + "/projects")
+    Observable<List<Project>> getAllProjects(@Query("page") int page);
+
+    /*@GET("act/type")
+    Observable<ActListResponse> getActList(@Query("type") int typeId,@Query("offset") int offset,@Query("order") String order);*/
 
     @GET(API_VERSION + "/projects/owned?order_by=last_activity_at")
     Call<List<Project>> getMyProjects();

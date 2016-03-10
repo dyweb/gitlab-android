@@ -24,6 +24,9 @@ import io.dongyue.gitlabandroid.view.CircleTransformation;
 public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<Project> projects;
+    private int page = 1;
+    private boolean finished;
+
     private OnProjectListener listener;
 
     public ProjectsAdapter(){
@@ -31,13 +34,25 @@ public class ProjectsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void add(List<Project> list){
+        if(list.isEmpty())finished=true;
         projects.addAll(list);
+        page++;
         notifyDataSetChanged();
     }
 
     public void set(List<Project> list){
         projects = list;
+        page = 1;
+        finished = false;
         notifyDataSetChanged();
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public boolean hasMore() {
+        return !finished;
     }
 
     public interface OnProjectListener{

@@ -71,6 +71,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.dongyue.gitlabandroid.activity.HomeActivity" />
         </activity>
+        <activity
+            android:name=".activity.MyActivitesActivity"
+            android:label="@string/title_activity_my_activites"
+            android:parentActivityName=".activity.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.dongyue.gitlabandroid.activity.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>
