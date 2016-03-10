@@ -1,44 +1,69 @@
 package io.dongyue.gitlabandroid.fragment;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.adapter.FeedAdapter;
+import io.dongyue.gitlabandroid.model.api.UserFull;
+import io.dongyue.gitlabandroid.model.rss.Entry;
+import io.dongyue.gitlabandroid.model.rss.Feed;
+import io.dongyue.gitlabandroid.network.GitLab;
+import io.dongyue.gitlabandroid.network.GitLabRss;
+import io.dongyue.gitlabandroid.network.GitlabClient;
+import io.dongyue.gitlabandroid.network.GitlabSubscriber;
+import io.dongyue.gitlabandroid.utils.Logger;
+import io.dongyue.gitlabandroid.utils.ToastUtils;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ActivitiesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ActivitiesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ActivitiesFragment extends BaseFragment {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_FEED_URL = "arg_feed_url";
+    private static final String ARG_FEED_TYPE = "arg_feed_type";
+    public static final int FEED_TYPE_USER = 0;
+    public static final int FEED_TYPE_ALL = 1;
+    public static final int FEED_TYPE_UNKNOWN = -1;
 
+    private Integer feed_type;
+    private Uri feed_url;
+    private FeedAdapter feedAdapter;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ActivitiesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ActivitiesFragment newInstance(String param1, String param2) {
+    @Bind(R.id.swipe_layout)SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.list)RecyclerView activityListView;
+
+    public static ActivitiesFragment newInstance(Uri feedUrl) {
         ActivitiesFragment fragment = new ActivitiesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(ARG_FEED_URL, feedUrl);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ActivitiesFragment newInstance(int feedType) {
+        ActivitiesFragment fragment = new ActivitiesFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_FEED_TYPE, feedType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,8 +76,8 @@ public class ActivitiesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            feed_url = getArguments().getParcelable(ARG_FEED_URL);
+            feed_type = getArguments().getInt(ARG_FEED_TYPE,FEED_TYPE_UNKNOWN);
         }
     }
 
@@ -63,5 +88,53 @@ public class ActivitiesFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_activities, container, false);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
+        feedAdapter = new FeedAdapter(new FeedAdapter.Listener() {
+            @Override
+            public void onFeedEntryClicked(Entry entry) {
+                ToastUtils.showShort(entry.getTitle());
+            }
+        });
+        activityListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        activityListView.setAdapter(feedAdapter);
+
+        loadData();
+    }
+
+    private void loadData(){
+        if(feed_url==null&&feed_type==FEED_TYPE_UNKNOWN)return;
+        swipeRefreshLayout.setRefreshing(true);
+
+        Subscriber<Feed> subscriber = new GitlabSubscriber<Feed>() {
+            @Override
+            public void onNext(Feed feed) {
+                swipeRefreshLayout.setRefreshing(false);
+                feedAdapter.setEntries(feed.getEntries());
+            }
+        };
+
+        if(feed_url!=null) {
+            addSubscription(GitlabClient.getRssInstance().getFeed(feed_url.toString())
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber));
+        }else if(feed_type==FEED_TYPE_USER){
+            addSubscription(GitlabClient.getInstance().getThisUser()
+                .flatMap(new Func1<UserFull, Observable<Feed>>() {
+                    @Override
+                    public Observable<Feed> call(UserFull userFull) {
+                        Logger.i(userFull.getFeedUrl().toString());
+                        return GitlabClient.getRssInstance().getFeed(userFull.getFeedUrl().toString());
+                    }
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+        }else if(feed_type == FEED_TYPE_ALL){
+            addSubscription(GitlabClient.getRssInstance().getFeed(GitLab.BASE_URL+ GitLabRss.RSS_SUFFIX)
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber));
+        }
+    }
 }

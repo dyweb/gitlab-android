@@ -3,12 +3,14 @@ package io.dongyue.gitlabandroid.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.fragment.ActivitiesFragment;
 
 public class MyActivitesActivity extends AppCompatActivity {
 
@@ -28,6 +30,11 @@ public class MyActivitesActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if(savedInstanceState==null){
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.feed_layout, ActivitiesFragment.newInstance(ActivitiesFragment.FEED_TYPE_USER)).commit();
+        }
     }
 
     @Override

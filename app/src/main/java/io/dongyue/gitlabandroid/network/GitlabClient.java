@@ -1,32 +1,21 @@
 package io.dongyue.gitlabandroid.network;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import io.dongyue.gitlabandroid.App;
-import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.model.Account;
-import io.dongyue.gitlabandroid.model.api.APIError;
 import io.dongyue.gitlabandroid.utils.GsonProvider;
 import io.dongyue.gitlabandroid.utils.OkHttpProvider;
 import io.dongyue.gitlabandroid.utils.Prefs;
-import io.dongyue.gitlabandroid.utils.ToastUtils;
+import io.dongyue.gitlabandroid.utils.SimpleXmlProvider;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
+import retrofit.SimpleXmlConverterFactory;
 
 /**
  * Created by Brotherjing on 2016/3/4.
@@ -35,11 +24,14 @@ public class GitlabClient {
 
     private static Account sAccount;
     private static GitLab gitLab;
+    private static GitLabRss gitLabRss;
+
     private static Picasso picasso;
 
     public static void setAccount(Account account){
         sAccount = account;
         gitLab = null;
+        gitLabRss = null;
         picasso = null;
     }
 
@@ -56,10 +48,17 @@ public class GitlabClient {
         if(sAccount==null){
             sAccount = Prefs.getAccount(App.getInstance());
         }
-        if(gitLab==null){
-            createInstance();
+        return getInstance(sAccount);
+    }
+
+    public static GitLabRss getRssInstance(){
+        if(sAccount==null){
+            sAccount = Prefs.getAccount(App.getInstance());
         }
-        return gitLab;
+        if(gitLabRss==null){
+            createRssInstance();
+        }
+        return gitLabRss;
     }
 
     public static Picasso getPicasso(){
@@ -69,6 +68,16 @@ public class GitlabClient {
                     .build();
         }
         return picasso;
+    }
+
+    private static void createRssInstance(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(GitLab.BASE_URL)
+                .client(OkHttpProvider.getInstance(sAccount))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(SimpleXmlConverterFactory.create(SimpleXmlProvider.createPersister(sAccount)))
+                .build();
+        gitLabRss = retrofit.create(GitLabRss.class);
     }
 
     private static void createInstance(){

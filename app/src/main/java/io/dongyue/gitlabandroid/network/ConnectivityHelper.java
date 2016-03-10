@@ -16,7 +16,7 @@ public class ConnectivityHelper {
     public static boolean isConnected(Context context){
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork!=null&&activeNetwork.isConnected();
+        return activeNetwork.isConnected();
     }
 
     public static boolean isWifiConnected(Context context){

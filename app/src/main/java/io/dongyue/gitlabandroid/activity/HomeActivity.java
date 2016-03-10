@@ -143,7 +143,7 @@ public class HomeActivity extends BaseActivity{
                     fragments[0]= ProjectsFragment.newInstance();
                     return fragments[0];
                 case 1:
-                    fragments[1]= ActivitiesFragment.newInstance(null,null);
+                    fragments[1]= ActivitiesFragment.newInstance(ActivitiesFragment.FEED_TYPE_ALL);
                     return fragments[1];
                 case 2:
                     fragments[2]= ProjectsFragment.newInstance();
