@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:minHeight="72dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/project_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textSize="14sp"
+                    tools:text="Owner/Project"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/issue_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textSize="16sp"
+                tools:text="Issue Title"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/issue_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/issue_id"/>
+
+                <TextView
+                    android:id="@+id/issue_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8sp"
+                    tools:text="@string/issue_author"/>
+
+                <TextView
+                    android:id="@+id/issue_create_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8sp"
+                    tools:text="yyyy/mm/dd"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/project_visibility"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:contentDescription="@null"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/divider_color"/>
+</FrameLayout>

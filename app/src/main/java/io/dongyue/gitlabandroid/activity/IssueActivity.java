@@ -3,14 +3,36 @@ package io.dongyue.gitlabandroid.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import io.dongyue.gitlabandroid.R;
+import java.util.List;
 
-public class IssueActivity extends AppCompatActivity {
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.activity.base.BaseActivity;
+import io.dongyue.gitlabandroid.adapter.IssuesAdapter;
+import io.dongyue.gitlabandroid.model.MyIssueInfo;
+import io.dongyue.gitlabandroid.network.GitlabClient;
+import io.dongyue.gitlabandroid.network.GitlabSubscriber;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+public class IssueActivity extends BaseActivity {
+
+    @Bind(R.id.swipe_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.list)
+    RecyclerView issuesListView;
+
+    private IssuesAdapter issuesAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,16 +40,9 @@ public class IssueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_issue);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        initListView();
     }
 
     @Override
@@ -41,5 +56,47 @@ public class IssueActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void initListView() {
+        ButterKnife.bind(this);
+        issuesAdapter = new IssuesAdapter();
+        issuesAdapter.setOnItemClickListener(new IssuesAdapter.OnMyIssueInfoListener() {
+            @Override
+            public void onMyIssueInfoClick(MyIssueInfo issueInfo) {
+                //TODO: Open IssueDetailActivity
+            }
+        });
+        linearLayoutManager = new LinearLayoutManager(this);
+        issuesListView.setLayoutManager(linearLayoutManager);
+        issuesListView.setAdapter(issuesAdapter);
+
+        loadData();
+    }
+
+    public void loadData() {
+        addSubscription(GitlabClient.getInstance().getAllIssues()
+                .flatMap(issues ->
+                                Observable.from(issues)
+                                        .flatMap(
+                                                issue ->
+                                                        GitlabClient.getInstance()
+                                                                .getProject(issue.getProjectId())
+                                                                .map(project -> new MyIssueInfo(issue, project))
+                                        )
+                )
+                .toSortedList((info1, info2) ->
+                                -info1.getIssue().getCreatedAt().compareTo(
+                                        info2.getIssue().getCreatedAt())
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GitlabSubscriber<List<MyIssueInfo>>() {
+                               @Override
+                               public void onNext(List<MyIssueInfo> myIssueInfos) {
+                                   issuesAdapter.add(myIssueInfos);
+                               }
+                           }
+                ));
     }
 }
