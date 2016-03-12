@@ -1,14 +1,11 @@
 package io.dongyue.gitlabandroid.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.util.List;
 
@@ -42,7 +39,18 @@ public class IssueActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        ButterKnife.bind(this);
+        initListener();
         initListView();
+    }
+
+    private void initListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+            }
+        });
     }
 
     @Override
@@ -59,7 +67,6 @@ public class IssueActivity extends BaseActivity {
     }
 
     public void initListView() {
-        ButterKnife.bind(this);
         issuesAdapter = new IssuesAdapter();
         issuesAdapter.setOnItemClickListener(new IssuesAdapter.OnMyIssueInfoListener() {
             @Override
@@ -94,7 +101,8 @@ public class IssueActivity extends BaseActivity {
                 .subscribe(new GitlabSubscriber<List<MyIssueInfo>>() {
                                @Override
                                public void onNext(List<MyIssueInfo> myIssueInfos) {
-                                   issuesAdapter.add(myIssueInfos);
+                                   issuesAdapter.set(myIssueInfos);
+                                   swipeRefreshLayout.setRefreshing(false);
                                }
                            }
                 ));
