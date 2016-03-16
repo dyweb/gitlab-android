@@ -67,7 +67,6 @@ public class GitlabNavigationView extends NavigationView {
                                 .into(imageView);
                     }
                 });
-        ButterKnife.bind(this, header);
         header.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
