@@ -19,6 +19,7 @@ import io.dongyue.gitlabandroid.utils.NavigationManager;
 import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
 import io.dongyue.gitlabandroid.utils.eventbus.events.CloseDrawerEvent;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -33,6 +34,8 @@ public class GitlabNavigationView extends NavigationView {
     TextView name;
     @Bind(R.id.email)
     TextView email;
+
+    Subscription subscription;
 
     public GitlabNavigationView(Context context) {
         super(context);
@@ -52,8 +55,8 @@ public class GitlabNavigationView extends NavigationView {
         inflateMenu(R.menu.activity_home_drawer);
         View header = inflateHeaderView(R.layout.nav_header_home);
         ButterKnife.bind(this, header);
-        Observable<UserFull> observable = GitlabClient.getInstance().getThisUser();
-        observable.subscribeOn(Schedulers.io())
+        subscription = GitlabClient.getInstance().getThisUser()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GitlabSubscriber<UserFull>() {
                     @Override
@@ -77,6 +80,15 @@ public class GitlabNavigationView extends NavigationView {
         setNavigationItemSelectedListener(onNavigationItemSelectedListener);
         //setSelectedItem();
     }
+
+    @Override
+    protected void onDetachedFromWindow (){
+        super.onDetachedFromWindow();
+        if(subscription!=null){
+            subscription.unsubscribe();
+        }
+    }
+
 
     private OnNavigationItemSelectedListener onNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {
         @Override

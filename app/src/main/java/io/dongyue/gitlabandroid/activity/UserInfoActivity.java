@@ -12,6 +12,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
+import io.dongyue.gitlabandroid.activity.base.BaseActivity;
 import io.dongyue.gitlabandroid.model.api.UserFull;
 import io.dongyue.gitlabandroid.network.GitlabClient;
 import io.dongyue.gitlabandroid.network.GitlabSubscriber;
@@ -19,7 +20,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class UserInfoActivity extends AppCompatActivity {
+public class UserInfoActivity extends BaseActivity {
 
     @Bind(R.id.text)
     TextView textView;
@@ -45,8 +46,8 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     private void loadData(){
-        Observable<UserFull> observable = GitlabClient.getInstance().getThisUser();
-        observable.subscribeOn(Schedulers.io())
+        addSubscription(GitlabClient.getInstance().getThisUser()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GitlabSubscriber<UserFull>() {
                     @Override
@@ -68,7 +69,7 @@ public class UserInfoActivity extends AppCompatActivity {
                                 .append("\nIdentities: ").append(userFull.getIdentities());
                         textView.setText(st);
                     }
-                });
+                }));
     }
 
     @Override
