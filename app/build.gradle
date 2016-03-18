@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
@@ -69,4 +69,8 @@ dependencies {
     compile 'org.parceler:parceler-api:1.0.3'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'net.danlew:android.joda:2.9.1'
+
+    compile 'io.requery:requery:1.0.0-beta2'
+    compile 'io.requery:requery-android:1.0.0-beta2' // for android
+    apt 'io.requery:requery-processor:1.0.0-beta2'   // use an APT plugin
 }

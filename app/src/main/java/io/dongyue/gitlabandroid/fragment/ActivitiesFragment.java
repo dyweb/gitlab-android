@@ -14,9 +14,12 @@ import android.widget.Button;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.dongyue.gitlabandroid.App;
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.adapter.FeedAdapter;
 import io.dongyue.gitlabandroid.model.api.UserFull;
+import io.dongyue.gitlabandroid.model.db.Activity;
+import io.dongyue.gitlabandroid.model.db.ActivityEntity;
 import io.dongyue.gitlabandroid.model.rss.Entry;
 import io.dongyue.gitlabandroid.model.rss.Feed;
 import io.dongyue.gitlabandroid.network.GitLab;
@@ -124,9 +127,12 @@ public class ActivitiesFragment extends BaseFragment {
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
         }else if(feed_type == FEED_TYPE_ALL){
-            addSubscription(GitlabClient.getRssInstance().getFeed(GitLab.BASE_URL+ GitLabRss.RSS_SUFFIX)
+            addSubscription(GitlabClient.getRssInstance().getFeed(GitLab.BASE_URL + GitLabRss.RSS_SUFFIX)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(subscriber));
+
+            //App.getData().select(Activity.class).get().toObservable();
+            //App.getData().insert(new ActivityEntity()).toObservable();
         }
     }
 }

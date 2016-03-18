@@ -80,6 +80,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.dongyue.gitlabandroid.activity.HomeActivity" />
         </activity>
+
+        <service
+            android:name=".service.PollingService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
