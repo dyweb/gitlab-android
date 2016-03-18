@@ -1,5 +1,6 @@
 package io.dongyue.gitlabandroid.adapter;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -8,14 +9,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.dongyue.gitlabandroid.App;
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.model.rss.Entry;
 import io.dongyue.gitlabandroid.network.GitlabClient;
+import io.dongyue.gitlabandroid.utils.ViewUtil;
 import io.dongyue.gitlabandroid.view.CircleTransformation;
 
 /**
@@ -34,6 +39,22 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedEntryViewHolder> {
         mListener = listener;
         mValues = new ArrayList<>();
     }
+
+    private Object tag = new Object();
+
+    public RecyclerView.OnScrollListener stopLoadingWhenScrollListener = new RecyclerView.OnScrollListener(){
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE)
+            {
+                Picasso.with(App.getInstance()).resumeTag(tag);
+            }
+            else
+            {
+                Picasso.with(App.getInstance()).pauseTag(tag);
+            }
+        }
+    };
 
     private final View.OnClickListener mOnItemClickListener = new View.OnClickListener() {
         @Override
@@ -61,7 +82,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedEntryViewHolder> {
     @Override
     public void onBindViewHolder(final FeedEntryViewHolder holder, int position) {
         holder.itemView.setTag(R.id.list_position, position);
-        holder.bind(getEntry(position));
+        holder.bind(tag,getEntry(position));
     }
 
     @Override
@@ -93,10 +114,14 @@ class FeedEntryViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, view);
     }
 
-    public void bind(Entry entry) {
+    public void bind(Object tag,Entry entry) {
         GitlabClient.getPicasso()
                 .load(entry.getThumbnail().getUrl())
+                .config(Bitmap.Config.RGB_565)
+                .resize(ViewUtil.dp2px(40), ViewUtil.dp2px(40))
+                .centerCrop()
                 .transform(new CircleTransformation())
+                .tag(tag)
                 .into(mImageView);
 
         mTitleView.setText(Html.fromHtml(entry.getTitle()));
