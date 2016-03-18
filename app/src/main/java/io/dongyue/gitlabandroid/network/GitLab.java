@@ -128,7 +128,7 @@ public interface GitLab {
     Call<List<Project>> getStarredProjects();
 
     @GET(API_VERSION + "/projects/{id}")
-    Call<Project> getProject(@Path("id") long projectId);
+    Observable<Project> getProject(@Path("id") long projectId);
 
     @GET
     Call<List<Project>> getProjects(@Url String url);
@@ -215,6 +215,9 @@ public interface GitLab {
                                    @Field("body") String body);
 
     /* --- ISSUES --- */
+
+    @GET(API_VERSION + "/issues")
+    Observable<List<Issue>> getAllIssues();
 
     @GET(API_VERSION + "/projects/{id}/issues")
     Call<List<Issue>> getIssues(@Path("id") long projectId,

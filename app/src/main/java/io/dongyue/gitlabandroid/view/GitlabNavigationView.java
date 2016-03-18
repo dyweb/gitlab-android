@@ -6,39 +6,70 @@ import android.support.design.widget.NavigationView;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
-import io.dongyue.gitlabandroid.activity.HomeActivity;
-import io.dongyue.gitlabandroid.activity.IssueActivity;
-import io.dongyue.gitlabandroid.model.api.Issue;
+import io.dongyue.gitlabandroid.model.api.UserFull;
+import io.dongyue.gitlabandroid.network.GitlabClient;
+import io.dongyue.gitlabandroid.network.GitlabSubscriber;
 import io.dongyue.gitlabandroid.utils.NavigationManager;
 import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
 import io.dongyue.gitlabandroid.utils.eventbus.events.CloseDrawerEvent;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Brotherjing on 2016/3/6.
  */
 public class GitlabNavigationView extends NavigationView {
 
+    @Bind(R.id.imageView)
+    ImageView imageView;
+    @Bind(R.id.name)
+    TextView name;
+    @Bind(R.id.email)
+    TextView email;
+
+    Subscription subscription;
+
     public GitlabNavigationView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public GitlabNavigationView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public GitlabNavigationView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(){
+    public void init(Context context){
         inflateMenu(R.menu.activity_home_drawer);
         View header = inflateHeaderView(R.layout.nav_header_home);
         ButterKnife.bind(this, header);
+        subscription = GitlabClient.getInstance().getThisUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GitlabSubscriber<UserFull>() {
+                    @Override
+                    public void onNext(UserFull userFull) {
+                        name.setText(userFull.getName());
+                        email.setText(userFull.getEmail());
+                        GitlabClient.getPicasso().with(context)
+                                .load(userFull.getAvatarUrl())
+                                .resize(100, 100)  //图片大小还未确定
+                                .centerCrop()
+                                .into(imageView);
+                    }
+                });
         header.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,6 +80,15 @@ public class GitlabNavigationView extends NavigationView {
         setNavigationItemSelectedListener(onNavigationItemSelectedListener);
         //setSelectedItem();
     }
+
+    @Override
+    protected void onDetachedFromWindow (){
+        super.onDetachedFromWindow();
+        if(subscription!=null){
+            subscription.unsubscribe();
+        }
+    }
+
 
     private OnNavigationItemSelectedListener onNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {
         @Override
