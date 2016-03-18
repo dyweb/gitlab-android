@@ -14,7 +14,15 @@ public class Thumbnail {
 
     public Thumbnail() {}
 
+    public Thumbnail(Uri mUrl) {
+        this.mUrl = mUrl;
+    }
+
     public Uri getUrl() {
         return mUrl;
+    }
+
+    public void setmUrl(Uri mUrl) {
+        this.mUrl = mUrl;
     }
 }

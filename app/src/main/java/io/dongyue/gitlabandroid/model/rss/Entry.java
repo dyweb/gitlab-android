@@ -41,4 +41,24 @@ public class Entry {
     public String getSummary() {
         return mSummary;
     }
+
+    public void setmLink(Link mLink) {
+        this.mLink = mLink;
+    }
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public void setmUpdated(Date mUpdated) {
+        this.mUpdated = mUpdated;
+    }
+
+    public void setmThumbnail(Thumbnail mThumbnail) {
+        this.mThumbnail = mThumbnail;
+    }
+
+    public void setmSummary(String mSummary) {
+        this.mSummary = mSummary;
+    }
 }

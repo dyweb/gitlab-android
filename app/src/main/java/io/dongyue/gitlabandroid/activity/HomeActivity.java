@@ -65,27 +65,21 @@ public class HomeActivity extends BaseActivity{
         tabLayout.setupWithViewPager(mViewPager);
 
         addSubscription(RxBus.getBus().observeEvents(CloseDrawerEvent.class)
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<CloseDrawerEvent>() {
-                    @Override
-                    public void call(CloseDrawerEvent closeDrawerEvent) {
-                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                        if (drawer.isDrawerOpen(GravityCompat.START)) {
-                            drawer.closeDrawer(GravityCompat.START);
-                        }
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(closeDrawerEvent -> {
+                    DrawerLayout drawer1 = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    if (drawer1.isDrawerOpen(GravityCompat.START)) {
+                        drawer1.closeDrawer(GravityCompat.START);
                     }
                 }));
 
         addSubscription(RxBus.getBus().observeEvents(APIErrorEvent.class)
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<APIErrorEvent>() {
-                    @Override
-                    public void call(APIErrorEvent apiErrorEvent) {
-                        if(apiErrorEvent.getCode()==401) {
-                            NavigationManager.toLogin(HomeActivity.this);
-                            finish();
-                        }
-                        //other cases
-                    }
-                }));
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(apiErrorEvent -> {
+                if(apiErrorEvent.getCode()==401) {
+                    NavigationManager.toLogin(HomeActivity.this);
+                    finish();
+                }
+                //other cases
+            }));
     }
 
     @Override

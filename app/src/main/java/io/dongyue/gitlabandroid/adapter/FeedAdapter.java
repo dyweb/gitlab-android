@@ -28,12 +28,15 @@ import io.dongyue.gitlabandroid.view.CircleTransformation;
  */
 public class FeedAdapter extends RecyclerView.Adapter<FeedEntryViewHolder> {
 
+    public static final int LIMIT = 20;
+
     public interface Listener {
         void onFeedEntryClicked(Entry entry);
     }
     private Listener mListener;
 
     private ArrayList<Entry> mValues;
+    private int offset=0;
 
     public FeedAdapter(Listener listener) {
         mListener = listener;
@@ -64,11 +67,24 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedEntryViewHolder> {
         }
     };
 
+    public void addEntries(Collection<Entry> entries){
+        mValues.addAll(entries);
+        offset = mValues.size();
+        notifyDataSetChanged();
+    }
+
+    public void addEntry(Entry entry){
+        mValues.add(entry);
+        offset = mValues.size();
+        notifyDataSetChanged();
+    }
+
     public void setEntries(Collection<Entry> entries) {
         mValues.clear();
         if (entries != null) {
             mValues.addAll(entries);
         }
+        offset = mValues.size();
         notifyDataSetChanged();
     }
 
@@ -92,6 +108,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedEntryViewHolder> {
 
     private Entry getEntry(int position) {
         return mValues.get(position);
+    }
+
+    public int getOffset() {
+        return offset;
     }
 }
 

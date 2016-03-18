@@ -14,7 +14,15 @@ public class Link {
 
     public Link() {}
 
+    public Link(Uri mHref) {
+        this.mHref = mHref;
+    }
+
     public Uri getHref() {
         return mHref;
+    }
+
+    public void setmHref(Uri mHref) {
+        this.mHref = mHref;
     }
 }
