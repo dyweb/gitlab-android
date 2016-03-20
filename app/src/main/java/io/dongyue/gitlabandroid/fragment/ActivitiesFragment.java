@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,14 +29,11 @@ import io.dongyue.gitlabandroid.network.GitlabClient;
 import io.dongyue.gitlabandroid.network.GitlabSubscriber;
 import io.dongyue.gitlabandroid.utils.Logger;
 import io.dongyue.gitlabandroid.utils.ToastUtils;
-import io.dongyue.gitlabandroid.utils.converter.ActivityConverter;
-import io.requery.query.ExpressionType;
-import rx.Observable;
-import rx.Single;
+import io.dongyue.gitlabandroid.utils.db.ActivityConverter;
+import io.dongyue.gitlabandroid.utils.db.ActivityDBManager;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -107,6 +103,8 @@ public class ActivitiesFragment extends BaseFragment {
 
         activityListView.addOnScrollListener(feedAdapter.stopLoadingWhenScrollListener);
 
+        swipeRefreshLayout.setOnRefreshListener(ActivitiesFragment.this::loadData);
+
         loadFromDB();
         loadData();
     }
@@ -114,13 +112,18 @@ public class ActivitiesFragment extends BaseFragment {
     private void loadFromDB(){
         //we have only cached activities of this type
         if(feed_type!=FEED_TYPE_ALL)return;
-        addSubscription(App.getData().select(Activity.class).get().toObservable()
-                .map(ActivityConverter::toActivity)
-            .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-            .subscribe(entry -> {
-                Logger.i(entry.getTitle());
-                feedAdapter.addEntry(entry);
-            }));
+        addSubscription(ActivityDBManager.getActivityList()
+                .map(activities -> {
+                    List<Entry> entries = new ArrayList<>();
+                    for (Activity activity : activities)
+                        entries.add(ActivityConverter.toActivity(activity));
+                    return entries;
+                })
+                .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                .subscribe(entries -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    feedAdapter.setEntries(entries);
+                }));
     }
 
     private void loadData(){
@@ -148,20 +151,7 @@ public class ActivitiesFragment extends BaseFragment {
                 .subscribe(subscriber));
         }else if(feed_type == FEED_TYPE_ALL){
             addSubscription(GitlabClient.getRssInstance().getFeed(GitLab.BASE_URL + GitLabRss.RSS_SUFFIX)
-                    .flatMap(feed -> {
-                        List<ActivityEntity> list = new ArrayList<>();
-                        Activity activity = App.getData().select(Activity.class).orderBy(ActivityEntity.UPDATED.desc()).get().firstOrNull();
-                        if (activity != null) Logger.i(activity.getUpdated().toString());
-                        for (Entry entry : feed.getEntries()) {
-                            if (activity == null || entry.getUpdated().after(activity.getUpdated())) {
-                                list.add(ActivityConverter.toEntity(entry, false));
-                                //Logger.i("insert " + entry.getTitle());
-                            } else {
-                                break;
-                            }
-                        }
-                        return App.getData().insert(list).toObservable();
-                    })
+                    .flatMap(ActivityDBManager::storeActivities)
                     .subscribeOn(Schedulers.io())
                     .subscribe(activityEntities -> {
                         loadFromDB();

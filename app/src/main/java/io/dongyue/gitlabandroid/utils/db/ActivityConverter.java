@@ -1,12 +1,18 @@
-package io.dongyue.gitlabandroid.utils.converter;
+package io.dongyue.gitlabandroid.utils.db;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.dongyue.gitlabandroid.App;
 import io.dongyue.gitlabandroid.model.db.Activity;
 import io.dongyue.gitlabandroid.model.db.ActivityEntity;
 import io.dongyue.gitlabandroid.model.rss.Entry;
+import io.dongyue.gitlabandroid.model.rss.Feed;
 import io.dongyue.gitlabandroid.model.rss.Link;
 import io.dongyue.gitlabandroid.model.rss.Thumbnail;
+import io.dongyue.gitlabandroid.utils.Logger;
 
 /**
  * Created by Brotherjing on 2016/3/11.
@@ -32,6 +38,22 @@ public class ActivityConverter {
         entry.setmTitle(activity.getTitle());
         entry.setmUpdated(activity.getUpdated());
         return entry;
+    }
+
+    public static List<ActivityEntity> extractNewActivities(Feed feed){
+        List<ActivityEntity> list = new ArrayList<>();
+        Activity activity = App.getData().select(Activity.class).orderBy(ActivityEntity.UPDATED.desc()).get().firstOrNull();
+        //if (activity != null) Logger.i(activity.getUpdated().toString());
+        for (Entry entry : feed.getEntries()) {
+            //Logger.i(entry.getTitle() + " " + entry.getUpdated().toString());
+            //Logger.i(activity.getUpdated().toString()+" "+entry.getUpdated().toString());
+            if (activity == null || entry.getUpdated().after(activity.getUpdated())) {
+                list.add(ActivityConverter.toEntity(entry, false));
+            } else {
+                break;
+            }
+        }
+        return list;
     }
 
 }

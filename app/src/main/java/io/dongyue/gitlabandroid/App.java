@@ -49,7 +49,7 @@ public class App extends Application {
 
         Calendar calendar = Calendar.getInstance();
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC,calendar.getTimeInMillis(),AlarmManager.INTERVAL_HALF_HOUR,pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC,calendar.getTimeInMillis()+60*1000,AlarmManager.INTERVAL_HALF_HOUR,pendingIntent);
     }
 
     public static SingleEntityStore<Persistable> getData() {
