@@ -45,7 +45,7 @@ public class App extends Application {
     private void initPollingService(){
         Intent intent = PollingService.getPollingIntent(this);
         PendingIntent pendingIntent = PendingIntent.getService(this, PollingService.CODE_ACTION_POLL
-                , intent, 0);
+                , intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);

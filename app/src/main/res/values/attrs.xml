@@ -9,4 +9,9 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="BadgeView">
+        <attr name="mcolor" format="color"/>
+        <attr name="show_background" format="boolean"/>
+        <attr name="size" format="dimension"/>
+    </declare-styleable>
 </resources>

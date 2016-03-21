@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tv_tab_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ACTIVITY"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <io.dongyue.gitlabandroid.view.BadgeView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="-8dp"
+        android:layout_marginRight="-8dp"
+        android:layout_alignRight="@id/layout_home"
+        app:mcolor="@android:color/holo_red_light"
+        android:layout_alignTop="@id/layout_home"/>
+
+
+</RelativeLayout>

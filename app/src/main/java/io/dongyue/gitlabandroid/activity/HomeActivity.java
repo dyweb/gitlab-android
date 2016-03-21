@@ -32,6 +32,7 @@ import io.dongyue.gitlabandroid.utils.ToastUtils;
 import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
 import io.dongyue.gitlabandroid.utils.eventbus.events.APIErrorEvent;
 import io.dongyue.gitlabandroid.utils.eventbus.events.CloseDrawerEvent;
+import io.dongyue.gitlabandroid.utils.eventbus.events.NewActivitiesEvent;
 import io.dongyue.gitlabandroid.view.NoScrollViewPager;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -64,6 +65,8 @@ public class HomeActivity extends BaseActivity{
         mViewPager.setCurrentItem(0);
         tabLayout.setupWithViewPager(mViewPager);
 
+        initTab();
+
         addSubscription(RxBus.getBus().observeEvents(CloseDrawerEvent.class)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(closeDrawerEvent -> {
                     DrawerLayout drawer1 = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -80,6 +83,20 @@ public class HomeActivity extends BaseActivity{
                 }
                 //other cases
             }));
+
+        addSubscription(RxBus.getBus().observeEvents(NewActivitiesEvent.class)
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<NewActivitiesEvent>() {
+                    @Override
+                    public void call(NewActivitiesEvent newActivitiesEvent) {
+
+                    }
+                }));
+    }
+
+    private void initTab(){
+        View indicatorProject = getLayoutInflater().inflate(R.layout.tab_layout,null);
+        //View indicatorA = getLayoutInflater().inflate(R.layout.tab_layout,null);
+        //View indicatorProject = getLayoutInflater().inflate(R.layout.tab_layout,null);
     }
 
     @Override

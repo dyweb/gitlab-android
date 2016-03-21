@@ -52,7 +52,7 @@ public class PollingService extends IntentService {
     }
 
     public static Intent getPollingIntent(Context context){
-        Intent intent = new Intent(context, PollingService.class);
+        Intent intent = new Intent();
         intent.setAction(ACTION_POLL);
         return intent;
     }
@@ -74,11 +74,12 @@ public class PollingService extends IntentService {
     private final Subscriber<Iterable<ActivityEntity>> subscriber = new GitlabSubscriber<Iterable<ActivityEntity>>() {
         @Override
         public void onNext(Iterable<ActivityEntity> activityEntities) {
-            //Logger.i("receive msg:"+feed.getEntries().size());
 
             List<ActivityEntity> list = new ArrayList<>();
             for(ActivityEntity activityEntity:activityEntities)
                 list.add(activityEntity);
+
+            Logger.i("receive msg:"+list.size());
 
             if(list.isEmpty())return;
 

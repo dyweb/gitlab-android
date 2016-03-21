@@ -31,6 +31,8 @@ import io.dongyue.gitlabandroid.utils.Logger;
 import io.dongyue.gitlabandroid.utils.ToastUtils;
 import io.dongyue.gitlabandroid.utils.db.ActivityConverter;
 import io.dongyue.gitlabandroid.utils.db.ActivityDBManager;
+import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
+import io.dongyue.gitlabandroid.utils.eventbus.events.NewActivitiesEvent;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -107,6 +109,10 @@ public class ActivitiesFragment extends BaseFragment {
 
         loadFromDB();
         loadData();
+        addSubscription(RxBus.getBus().observeEvents(NewActivitiesEvent.class).observeOn(AndroidSchedulers.mainThread()
+            ).subscribe(newActivitiesEvent -> {
+                loadFromDB();
+            }));
     }
 
     private void loadFromDB(){

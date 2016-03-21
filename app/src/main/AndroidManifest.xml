@@ -83,7 +83,11 @@
 
         <service
             android:name=".service.PollingService"
-            android:exported="false" >
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="io.dongyue.gitlabandroid.service.action.POLL_ACTIVITIES"/>
+            </intent-filter>
         </service>
     </application>
 
