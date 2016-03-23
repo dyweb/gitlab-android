@@ -1,5 +1,6 @@
 package io.dongyue.gitlabandroid.adapter;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import io.dongyue.gitlabandroid.model.api.Project;
 import io.dongyue.gitlabandroid.model.api.RepositoryCommit;
 import io.dongyue.gitlabandroid.network.GitlabClient;
 import io.dongyue.gitlabandroid.utils.ConversionUtil;
+import io.dongyue.gitlabandroid.utils.ImageUtil;
+import io.dongyue.gitlabandroid.utils.ViewUtil;
 import io.dongyue.gitlabandroid.view.CircleTransformation;
 
 /**
@@ -108,6 +111,8 @@ class RepositoryCommitViewHolder extends RecyclerView.ViewHolder {
     TextView titleView;
     @Bind(R.id.project_commit_info)
     TextView infoView;
+    @Bind(R.id.project_commit_image)
+    ImageView imageView;
 
     public RepositoryCommitViewHolder(View itemView) {
         super(itemView);
@@ -115,9 +120,15 @@ class RepositoryCommitViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(RepositoryCommit repositoryCommit) {
-
+        GitlabClient.getPicasso()
+                .load(ImageUtil.getAvatarUrl(repositoryCommit.getAuthorEmail(),itemView.getResources().getDimensionPixelSize(R.dimen.image_size)))
+                .config(Bitmap.Config.RGB_565)
+                .resize(ViewUtil.dp2px(40), ViewUtil.dp2px(40))
+                .centerCrop()
+                .transform(new CircleTransformation())
+                .into(imageView);
         titleView.setText(repositoryCommit.getMessage());
         String date = ConversionUtil.fromDate(repositoryCommit.getCreatedAt());
-        infoView.setText(repositoryCommit.getAuthorName()+" authored at " + date);
+        infoView.setText(repositoryCommit.getAuthorName() + " authored at " + date);
     }
 }
