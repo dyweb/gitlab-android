@@ -284,7 +284,7 @@ public interface GitLab {
                                  @Query("ref") String ref);
 
     @GET(API_VERSION + "/projects/{id}/repository/commits")
-    Call<List<RepositoryCommit>> getCommits(@Path("id") long projectId,
+    Observable<List<RepositoryCommit>> getCommits(@Path("id") long projectId,
                                             @Query("ref_name") String branchName,
                                             @Query("page") int page);
 

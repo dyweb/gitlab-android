@@ -2,11 +2,9 @@ package io.dongyue.gitlabandroid.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -26,6 +24,7 @@ import org.parceler.Parcels;
 
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.activity.base.BaseActivity;
+import io.dongyue.gitlabandroid.fragment.RepositoryCommitsFragment;
 import io.dongyue.gitlabandroid.model.api.Project;
 import io.dongyue.gitlabandroid.utils.NavigationManager;
 import io.dongyue.gitlabandroid.utils.ToastUtils;
@@ -41,6 +40,8 @@ public class ProjectActivity extends BaseActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
+
+    private Project project;
 
     public static Intent viewProject(Context context,Project project){
         Intent intent = new Intent(context,ProjectActivity.class);
@@ -76,14 +77,15 @@ public class ProjectActivity extends BaseActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Project project = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_PROJECT));
+        project = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_PROJECT));
         ToastUtils.showShort(project.getNameWithNamespace());
+
 
         addSubscription(RxBus.getBus().observeEvents(APIErrorEvent.class)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<APIErrorEvent>() {
                     @Override
                     public void call(APIErrorEvent apiErrorEvent) {
-                        if(apiErrorEvent.getCode()==401) {
+                        if (apiErrorEvent.getCode() == 401) {
                             NavigationManager.toLogin(ProjectActivity.this);
                             finish();
                         }
@@ -137,7 +139,13 @@ public class ProjectActivity extends BaseActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            if (position == 3){
+                //Project Commit Fragment
+                return RepositoryCommitsFragment.newInstance(project.getId());
+            }else{
+                return PlaceholderFragment.newInstance(position + 1);
+
+            }
         }
 
         @Override
