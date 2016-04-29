@@ -79,6 +79,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedEntryViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void clearEntries(){
+        mValues.clear();
+        offset=mValues.size();
+        notifyDataSetChanged();
+    }
+
     public void setEntries(Collection<Entry> entries) {
         mValues.clear();
         if (entries != null) {

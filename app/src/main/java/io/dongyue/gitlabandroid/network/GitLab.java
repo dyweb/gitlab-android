@@ -17,6 +17,7 @@ import io.dongyue.gitlabandroid.model.api.Note;
 import io.dongyue.gitlabandroid.model.api.Project;
 import io.dongyue.gitlabandroid.model.api.RepositoryCommit;
 import io.dongyue.gitlabandroid.model.api.RepositoryFile;
+import io.dongyue.gitlabandroid.model.api.RepositoryTreeObject;
 import io.dongyue.gitlabandroid.model.api.User;
 import io.dongyue.gitlabandroid.model.api.UserBasic;
 import io.dongyue.gitlabandroid.model.api.UserFull;
@@ -268,18 +269,18 @@ public interface GitLab {
     /* --- REPOSITORY --- */
 
     @GET(API_VERSION + "/projects/{id}/repository/branches?order_by=last_activity_at")
-    Call<List<Branch>> getBranches(@Path("id") long projectId);
+    Observable<List<Branch>> getBranches(@Path("id") long projectId);
 
     @GET(API_VERSION + "/projects/{id}/repository/contributors")
     Call<List<Contributor>> getContributors(@Path("id") long projectId);
 
-    /*@GET(API_VERSION + "/projects/{id}/repository/tree")
-    Call<List<RepositoryTreeObject>> getTree(@Path("id") long projectId,
+    @GET(API_VERSION + "/projects/{id}/repository/tree")
+    Observable<List<RepositoryTreeObject>> getTree(@Path("id") long projectId,
                                              @Query("ref_name") String branchName,
-                                             @Query("path") String path);*/
+                                             @Query("path") String path);
 
     @GET(API_VERSION + "/projects/{id}/repository/files")
-    Call<RepositoryFile> getFile(@Path("id") long projectId,
+    Observable<RepositoryFile> getFile(@Path("id") long projectId,
                                  @Query("file_path") String path,
                                  @Query("ref") String ref);
 

@@ -1,5 +1,7 @@
 package io.dongyue.gitlabandroid.model.api;
 
+import android.graphics.RectF;
+
 import com.google.gson.annotations.SerializedName;
 
 public class RepositoryFile {
@@ -23,6 +25,12 @@ public class RepositoryFile {
     String mLastCommitId;
 
     public RepositoryFile() {}
+
+    static public RepositoryFile empty(){
+        RepositoryFile repositoryFile = new RepositoryFile();
+        repositoryFile.mContent = "";
+        return repositoryFile;
+    }
 
     public String getFileName() {
         return mFileName;

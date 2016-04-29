@@ -16,11 +16,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.dongyue.gitlabandroid.App;
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.adapter.FeedAdapter;
 import io.dongyue.gitlabandroid.model.db.Activity;
-import io.dongyue.gitlabandroid.model.db.ActivityEntity;
 import io.dongyue.gitlabandroid.model.rss.Entry;
 import io.dongyue.gitlabandroid.model.rss.Feed;
 import io.dongyue.gitlabandroid.network.GitLab;
@@ -35,7 +33,6 @@ import io.dongyue.gitlabandroid.utils.eventbus.RxBus;
 import io.dongyue.gitlabandroid.utils.eventbus.events.NewActivitiesEvent;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -105,10 +102,10 @@ public class ActivitiesFragment extends BaseFragment {
 
         activityListView.addOnScrollListener(feedAdapter.stopLoadingWhenScrollListener);
 
-        swipeRefreshLayout.setOnRefreshListener(ActivitiesFragment.this::loadData);
+        swipeRefreshLayout.setOnRefreshListener(ActivitiesFragment.this::refresh);
 
         loadFromDB();
-        loadData();
+        refresh();
         addSubscription(RxBus.getBus().observeEvents(NewActivitiesEvent.class).observeOn(AndroidSchedulers.mainThread()
             ).subscribe(newActivitiesEvent -> {
                 loadFromDB();
@@ -132,7 +129,7 @@ public class ActivitiesFragment extends BaseFragment {
                 }));
     }
 
-    private void loadData(){
+    private void refresh(){
         if(feed_url==null&&feed_type==FEED_TYPE_UNKNOWN)return;
         swipeRefreshLayout.setRefreshing(true);
 
@@ -140,15 +137,16 @@ public class ActivitiesFragment extends BaseFragment {
             @Override
             public void onNext(Feed feed) {
                 swipeRefreshLayout.setRefreshing(false);
+                feedAdapter.clearEntries();
                 feedAdapter.setEntries(feed.getEntries());
             }
         };
 
-        if(feed_url!=null) {
+        if(feed_url!=null) {//get all activities
             addSubscription(GitlabClient.getRssInstance().getFeed(feed_url.toString())
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(subscriber));
-        }else if(feed_type==FEED_TYPE_USER){
+        }else if(feed_type==FEED_TYPE_USER){//get activities of this user
             addSubscription(GitlabClient.getInstance().getThisUser()
                 .flatMap(userFull -> {
                     Logger.i(userFull.getFeedUrl().toString());

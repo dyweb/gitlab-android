@@ -1,0 +1,39 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.dongyue.gitlabandroid.fragment.OverviewFragment">
+
+    <io.dongyue.gitlabandroid.view.GitlabSwipeRefreshLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/refresh_layout">
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:layout_margin="8dp"
+            android:id="@+id/project_title"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="8dp"
+            android:id="@+id/project_readme"/>
+
+        </LinearLayout>
+
+        </ScrollView>
+
+    </io.dongyue.gitlabandroid.view.GitlabSwipeRefreshLayout>
+
+
+</FrameLayout>
