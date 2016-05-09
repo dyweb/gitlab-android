@@ -93,7 +93,7 @@ public interface GitLab {
     Call<List<Project>> getGroupProjects(@Path("id") long id);
 
     @GET(API_VERSION + "/groups/{id}/members")
-    Call<List<Member>> getGroupMembers(@Path("id") long groupId);
+    Observable<List<Member>> getGroupMembers(@Path("id") long groupId);
 
     @FormUrlEncoded
     @POST(API_VERSION + "/groups/{id}/members")
@@ -138,7 +138,10 @@ public interface GitLab {
     Call<List<Project>> searchAllProjects(@Path("query") String query);
 
     @GET(API_VERSION + "/projects/{id}/members")
-    Call<List<Member>> getProjectMembers(@Path("id") long projectId);
+    Observable<List<Member>> getProjectMembers(@Path("id") long projectId);
+
+    @GET(API_VERSION + "/projects/{id}/members")
+    Observable<List<Member>> getProjectMembers(@Path("id") long projectId,@Query("page")int page);
 
     @GET
     Call<List<Member>> getProjectMembers(@Url String url);

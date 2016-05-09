@@ -32,9 +32,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.activity.base.BaseActivity;
+import io.dongyue.gitlabandroid.fragment.ActivitiesFragment;
 import io.dongyue.gitlabandroid.fragment.FilesFragment;
 import io.dongyue.gitlabandroid.fragment.IssuesFragment;
 import io.dongyue.gitlabandroid.fragment.OverviewFragment;
+import io.dongyue.gitlabandroid.fragment.ProjectMemberFragment;
 import io.dongyue.gitlabandroid.fragment.RepositoryCommitsFragment;
 import io.dongyue.gitlabandroid.model.api.Branch;
 import io.dongyue.gitlabandroid.model.api.Project;
@@ -185,6 +187,8 @@ public class ProjectActivity extends BaseActivity {
             switch (position) {
                 case 0:
                     return OverviewFragment.newInstance();
+                case 1:
+                    return ActivitiesFragment.newInstance(project.getFeedUrl());
                 case 2:
                     return FilesFragment.newInstance();
                 case 3:
@@ -192,6 +196,8 @@ public class ProjectActivity extends BaseActivity {
                     return RepositoryCommitsFragment.newInstance(project.getId());
                 case 4:
                     return IssuesFragment.newInstance();
+                case 5:
+                    return ProjectMemberFragment.newInstance();
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }

@@ -125,10 +125,10 @@ class BreadcrumbViewHolder extends RecyclerView.ViewHolder {
     public void bind(String breadcrumb, boolean showArrow) {
         mTextView.setText(breadcrumb);
         if (showArrow) {
-            mTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), android.R.color.white));
+            mTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), android.R.color.darker_gray));
             mArrowView.setVisibility(View.VISIBLE);
         } else {
-            mTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), android.R.color.darker_gray));
+            mTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), android.R.color.white));
             mArrowView.setVisibility(View.GONE);
         }
     }
