@@ -221,8 +221,12 @@ public interface GitLab {
     Observable<List<Issue>> getAllIssues();
 
     @GET(API_VERSION + "/projects/{id}/issues")
-    Call<List<Issue>> getIssues(@Path("id") long projectId,
-                                @Query("state") String state);
+    Observable<List<Issue>> getIssues(@Path("id") long projectId,
+                                      @Query("state") String state);
+
+    @GET(API_VERSION + "/projects/{id}/issues")
+    Observable<List<Issue>> getIssues(@Path("id") long projectId,
+                                @Query("state") String state,@Query("page") int page);
 
     @GET
     Call<List<Issue>> getIssues(@Url String url,

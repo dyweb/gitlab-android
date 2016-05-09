@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.activity.base.BaseActivity;
 import io.dongyue.gitlabandroid.fragment.FilesFragment;
+import io.dongyue.gitlabandroid.fragment.IssuesFragment;
 import io.dongyue.gitlabandroid.fragment.OverviewFragment;
 import io.dongyue.gitlabandroid.fragment.RepositoryCommitsFragment;
 import io.dongyue.gitlabandroid.model.api.Branch;
@@ -189,6 +190,8 @@ public class ProjectActivity extends BaseActivity {
                 case 3:
                     //Project Commit Fragment
                     return RepositoryCommitsFragment.newInstance(project.getId());
+                case 4:
+                    return IssuesFragment.newInstance();
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }

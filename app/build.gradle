@@ -70,6 +70,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.1.1'
     compile 'net.danlew:android.joda:2.9.1'
     compile 'com.commit451:bypasses:1.0.1'
+    compile 'com.pnikosis:materialish-progress:1.7'
 
     compile 'io.requery:requery:1.0.0-beta2'
     compile 'io.requery:requery-android:1.0.0-beta2' // for android
