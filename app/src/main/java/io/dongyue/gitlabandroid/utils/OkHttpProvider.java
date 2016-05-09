@@ -44,25 +44,22 @@ public class OkHttpProvider {
     }
 
 
-    private static final Interceptor mErrorInterceptor = new Interceptor() {
-        @Override
-        public Response intercept(Chain chain) throws IOException {
+    private static final Interceptor mErrorInterceptor = chain -> {
 
-            Request request = chain.request();
-            if(!ConnectivityHelper.isConnected(App.getInstance())){
-                RxBus.getBus().post(new NoNetworkEvent());
-                //Log.i("yj",mContext.getResources().getString(R.string.error_not_connected));
-                return null;
-            }
-            Response response = chain.proceed(request);
-            if(!response.isSuccessful()){
-                //String msg = response.message();
-                APIError error = GsonProvider.getInstance().fromJson(response.body().string(),APIError.class);
-                RxBus.getBus().post(new APIErrorEvent(response.code(),error));
-                return null;
-            }
-            return response;
+        Request request = chain.request();
+        if(!ConnectivityHelper.isConnected(App.getInstance())){
+            RxBus.getBus().post(new NoNetworkEvent());
+            //Log.i("yj",mContext.getResources().getString(R.string.error_not_connected));
+            return null;
         }
+        Response response = chain.proceed(request);
+        if(!response.isSuccessful()){
+            //String msg = response.message();
+            APIError error = GsonProvider.getInstance().fromJson(response.body().string(),APIError.class);
+            RxBus.getBus().post(new APIErrorEvent(response.code(),error));
+            return null;
+        }
+        return response;
     };
 
 }

@@ -39,18 +39,18 @@ public class RepositoryTreeObject {
 
     public int getDrawableForType() {
         if (mType == null) {
-            return R.drawable.ic_unknown_24dp;
+            return android.R.drawable.ic_dialog_info;
         }
         switch (mType) {
             case FILE:
-                return R.drawable.ic_file_24dp;
+                return android.R.drawable.ic_dialog_email;
             case FOLDER:
-                return R.drawable.ic_folder_24dp;
+                return android.R.drawable.ic_menu_gallery;
             case REPO:
-                return R.drawable.ic_repo_24dp;
+                return android.R.drawable.ic_menu_agenda;
         }
 
-        return R.drawable.ic_unknown_24dp;
+        return android.R.drawable.ic_dialog_info;
     }
 
     public Uri getUrl(Project project, String branchName, String currentPath) {

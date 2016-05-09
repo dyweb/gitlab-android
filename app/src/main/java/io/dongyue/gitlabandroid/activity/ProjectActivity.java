@@ -32,6 +32,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.dongyue.gitlabandroid.R;
 import io.dongyue.gitlabandroid.activity.base.BaseActivity;
+import io.dongyue.gitlabandroid.fragment.FilesFragment;
 import io.dongyue.gitlabandroid.fragment.OverviewFragment;
 import io.dongyue.gitlabandroid.fragment.RepositoryCommitsFragment;
 import io.dongyue.gitlabandroid.model.api.Branch;
@@ -109,7 +110,7 @@ public class ProjectActivity extends BaseActivity {
         addSubscription(GitlabClient.getInstance().getBranches(project.getId())
             .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(branches -> {
-                if (!branches.isEmpty()) {
+                if (branches!=null&&!branches.isEmpty()) {
                     spinner.setVisibility(View.VISIBLE);
                     spinner.setAdapter(new ArrayAdapter<>(ProjectActivity.this, R.layout.simple_list_item_1_dark, android.R.id.text1, branches));
                     for (int i = 0; i < branches.size(); ++i) {
@@ -117,19 +118,21 @@ public class ProjectActivity extends BaseActivity {
                             spinner.setSelection(i);
                         }
                     }
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            mBranchName = ((TextView) view).getText().toString();
+                            broadcastLoad(mBranchName);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                }else{
+                    spinner.setVisibility(View.GONE);
                 }
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        mBranchName = ((TextView) view).getText().toString();
-                        broadcastLoad(mBranchName);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
             }));
     }
 
@@ -181,6 +184,8 @@ public class ProjectActivity extends BaseActivity {
             switch (position) {
                 case 0:
                     return OverviewFragment.newInstance();
+                case 2:
+                    return FilesFragment.newInstance();
                 case 3:
                     //Project Commit Fragment
                     return RepositoryCommitsFragment.newInstance(project.getId());

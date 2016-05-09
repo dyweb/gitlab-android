@@ -3,6 +3,7 @@ package io.dongyue.gitlabandroid.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,8 +76,8 @@ public class OverviewFragment extends BaseFragment{
                     @Override
                     public void onNext(RepositoryFile repositoryFile) {
                         swipeRefreshLayout.setRefreshing(false);
-                        String text = new String(Base64.decode(repositoryFile.getContent(),Base64.DEFAULT), Charset.forName("UTF-8"));
-                        tvReadme.setText(bypass.markdownToSpannable(text,new PicassoImageGetter(tvReadme,GitlabClient.getPicasso())));
+                        String text = new String(Base64.decode(repositoryFile.getContent(), Base64.DEFAULT), Charset.forName("UTF-8"));
+                        tvReadme.setText(bypass.markdownToSpannable(text, new PicassoImageGetter(tvReadme, GitlabClient.getPicasso())));
                     }
                 }));
     }
@@ -104,6 +105,7 @@ public class OverviewFragment extends BaseFragment{
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        tvReadme.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override
@@ -118,5 +120,11 @@ public class OverviewFragment extends BaseFragment{
         tvTitle.setText(project.getName());
         swipeRefreshLayout.setRefreshing(true);
         loadData();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }
