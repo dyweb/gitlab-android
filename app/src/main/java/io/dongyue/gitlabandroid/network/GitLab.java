@@ -78,6 +78,9 @@ public interface GitLab {
     @GET(API_VERSION + "/users/{id}")
     Call<User> getUser(@Path("id") long userId);
 
+    @GET(API_VERSION + "/users/")
+    Observable<List<UserBasic>> getUser(@Query("username") String username);
+
     /* --- GROUPS --- */
 
     @GET(API_VERSION + "/groups")
@@ -130,6 +133,9 @@ public interface GitLab {
 
     @GET(API_VERSION + "/projects/{id}")
     Observable<Project> getProject(@Path("id") long projectId);
+
+    @GET(API_VERSION + "/projects/{id}")
+    Observable<Project> getProject(@Path("id") String projectName);
 
     @GET
     Call<List<Project>> getProjects(@Url String url);
